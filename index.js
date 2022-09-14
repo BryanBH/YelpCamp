@@ -19,11 +19,11 @@ const helmet = require("helmet");
 const campgroundsRoutes = require("./routes/campgrounds");
 const reviewsRoutes = require("./routes/reviews");
 const authRoutes = require("./routes/auth");
-const dbUrl = process.env.DB_URL;
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 const MongoStore = require("connect-mongo");
 
 mongoose
-  .connect(dbUrl || "mongodb://localhost:27017/yelp-camp")
+  .connect(dbUrl)
   .then(() => {
     console.log("Database connection established");
   })
@@ -158,7 +158,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err });
 });
 
-const port = process.eventNames.PORT || 3000
+const port = process.eventNames.PORT || 3000;
 app.listen(port, () => {
   console.log(`Serving on port ${port}`);
 });
