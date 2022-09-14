@@ -1,10 +1,7 @@
 <% layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/style/stars.css" />
-<script>
-  const mbToken = "<%-process.env.MAPBOX_TOKEN%>";
-</script>
+
 <div class="row">
-  <div id='map' style='width: 400px; height: 300px;'></div>
   <div class="col-6">
     <div
       id="carouselControls"
@@ -68,6 +65,7 @@
     </div>
   </div>
   <div class="col-6">
+  <div id='map'></div>
     <% if (currentUser) { %>
     <h2>Leave a Review</h2>
     <form
@@ -150,5 +148,9 @@
     <% } %>
   </div>
 </div>
-
+<script>
+  const mbToken = "<%-process.env.MAPBOX_TOKEN%>";
+  const camp = <%-JSON.stringify(camp)%>;
+  console.log(camp.geometry.coordinates)
+</script>
 <script src="/js/showPageMap.js"></script>

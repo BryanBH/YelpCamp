@@ -6,7 +6,6 @@ const { cloudinary } = require("../cloudinary");
 
 module.exports.index = async (req, res) => {
   const campgrounds = await Campground.find({});
-  console.log(campgrounds.images);
   res.render("campgrounds/index", { campgrounds });
 };
 
@@ -21,6 +20,11 @@ module.exports.createCampground = async (req, res) => {
       limit: 1,
     })
     .send();
+  console.log(geoData.body.features);
+  if (geoData.body.features<1) {
+    req.flash("error", "Must be a valid location");
+    return res.redirect("/campgrounds/new");
+  }
   const campground = new Campground(req.body.campground);
   campground.geometry = geoData.body.features[0].geometry;
   campground.images = req.files.map((f) => ({
@@ -45,7 +49,7 @@ module.exports.showCampground = async (req, res) => {
     })
     // populate the campground author
     .populate("author");
-  console.log(camp);
+  // console.log(camp.geometry.coordinates);
   if (!camp) {
     req.flash("error", "Campground not found");
     res.redirect("/campgrounds");

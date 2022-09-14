@@ -4,22 +4,26 @@ if (process.env.NODE_ENV !== "production") {
 
 const express = require("express");
 const path = require("path");
+const mongoSanitize = require("express-mongo-sanitize");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const mehtodOverride = require("method-override");
+// stores everythin gin local but does not work in prod
 const session = require("express-session");
 const flash = require("connect-flash");
 const ExpressError = require("./utilities/ExpressError");
 const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/user");
-
+const helmet = require("helmet");
 const campgroundsRoutes = require("./routes/campgrounds");
 const reviewsRoutes = require("./routes/reviews");
 const authRoutes = require("./routes/auth");
+const dbUrl = process.env.DB_URL;
+const MongoStore = require("connect-mongo");
 
 mongoose
-  .connect("mongodb://localhost:27017/yelp-camp")
+  .connect(dbUrl || "mongodb://localhost:27017/yelp-camp")
   .then(() => {
     console.log("Database connection established");
   })
@@ -36,14 +40,76 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(mehtodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(mongoSanitize());
+
+const scriptSrcUrls = [
+  "https://stackpath.bootstrapcdn.com/",
+  "https://api.tiles.mapbox.com/",
+  "https://api.mapbox.com/",
+  "https://kit.fontawesome.com/",
+  "https://cdnjs.cloudflare.com/",
+  "https://cdn.jsdelivr.net",
+];
+const styleSrcUrls = [
+  "https://kit-free.fontawesome.com/",
+  "https://stackpath.bootstrapcdn.com/",
+  "https://api.mapbox.com/",
+  "https://api.tiles.mapbox.com/",
+  "https://fonts.googleapis.com/",
+  "https://use.fontawesome.com/",
+  "https://cdn.jsdelivr.net",
+];
+const connectSrcUrls = [
+  "https://api.mapbox.com/",
+  "https://a.tiles.mapbox.com/",
+  "https://b.tiles.mapbox.com/",
+  "https://events.mapbox.com/",
+];
+const fontSrcUrls = [];
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", "blob:"],
+      objectSrc: [],
+      imgSrc: [
+        "'self'",
+        "blob:",
+        "data:",
+        "https://res.cloudinary.com/dl4elsbqg/",
+        "https://images.unsplash.com",
+      ],
+      fontSrc: ["'self'", ...fontSrcUrls],
+    },
+  })
+);
+
+const secret = process.env.SECRET || "daBackUp";
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  secret,
+  touchAfter: 24 * 3600,
+});
+
+store.on("error", function (e) {
+  console.log("Session store error ", e);
+});
+// local storage sessions created until the MogoStore was added
 const sessionConfig = {
-  secret: "DevSecret",
+  store,
+  name: "session",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
+    // secure:true
   },
 };
 app.use(session(sessionConfig));
@@ -60,15 +126,16 @@ passport.serializeUser(User.serializeUser());
 // how to get a user out of a session
 passport.deserializeUser(User.deserializeUser());
 
-app.get("/", (req, res) => {
-  res.send("<h1>Home Page</h1>");
-});
-
+//cookie setting
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
+});
+
+app.get("/", (req, res) => {
+  res.render("home");
 });
 
 app.use("/", authRoutes);
@@ -91,6 +158,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err });
 });
 
-app.listen(3000, () => {
-  console.log("Serving on port 3000");
+const port = process.eventNames.PORT || 3000
+app.listen(port, () => {
+  console.log(`Serving on port ${port}`);
 });
