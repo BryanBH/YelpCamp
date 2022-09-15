@@ -100,15 +100,16 @@ function seedImg() {
  * generate 20 random campgrounds from 1000 different cities
  */
 const seedDB = async () => {
-  await Campground.deleteMany({});
-  for (let i = 0; i < 500; i++) {
+  // await Campground.deleteMany({});
+  for (let i = 0; i < 300; i++) {
     const random1000 = Math.floor(Math.random() * 1000);
     const price = Math.floor(Math.random() * 30) + 10;
 
     const campLocation = `${cities[random1000].city}, ${cities[random1000].state}`;
 
     const camp = new Campground({
-      // Bryan Benjumea Author
+      // Estefania Author
+      // bryan 63213927b7aac35b4736bb19
       author: "63213927b7aac35b4736bb19",
       location: campLocation,
       title: `${sample(descriptors)} ${sample(places)}`,

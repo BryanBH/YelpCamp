@@ -1,6 +1,8 @@
 const User = require("../models/user");
 const Campgrounds = require("../models/campground");
 const Reviews = require("../models/review");
+const { cloudinary } = require("../cloudinary");
+
 
 module.exports.registerForm = (req, res) => {
   res.render("auth/register");
@@ -68,8 +70,27 @@ module.exports.updateProfile = async (req, res) => {
     ...req.body,
   });
   await user.save();
-  req.flash("success", "Updated User Info")
-  res.redirect(`/profile/${req.params.id}`)
+  req.flash("success", "Updated User Info");
+  res.redirect(`/profile/${req.params.id}`);
+};
+
+module.exports.updateImagePage = async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.render("auth/editProfilePic", { user });
+};
+
+module.exports.updateImage = async (req, res) => {
+  const user = await User.findById(req.params.id)
+  const imgObject = user.images;
+  console.log(imgObject)
+  user.images = {
+    url: req.file.path,
+    filename: req.file.filename,
+  };
+  await cloudinary.uploader.destroy(imgObject.filename)
+  // just the file name 
+  await user.save()
+  res.redirect(`/profile/${user._id}`)
 };
 
 module.exports.logOut = (req, res) => {

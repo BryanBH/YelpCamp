@@ -7,7 +7,12 @@
           src="<%=currentUser.images.thumbnail%>"
           alt=""
           class="card-img-top profile-img mt-3" />
-        <div class="card-body text-center">
+        <span class="justify-content-end"
+          ><a href="/profile/<%= currentUser._id %>/editImg" class="text-muted"
+            >Edit Picture</a
+          ></span
+        >
+        <div class="card-body text-center pt-1">
           <h3 class="card-title"><%= currentUser.username %></h3>
           <p class="card-text">
             <strong>Email:</strong> <%= currentUser.email %>
@@ -29,7 +34,11 @@
             <strong>Reviews Left:</strong> <%= numReviews %>
           </p>
         </div>
-        <a href="/profile/<%= currentUser._id %>/edit" class="text-muted justify-content-start mb-3">Edit Profile</a>
+        <a
+          href="/profile/<%= currentUser._id %>/edit"
+          class="text-muted justify-content-start mb-3"
+          >Edit Profile</a
+        >
       </div>
     </div>
   </div>

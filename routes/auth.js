@@ -12,6 +12,7 @@ const {
 } = require("../utilities/middleware");
 const authController = require("../controllers/authController");
 const HandleAsync = require("../utilities/HandleAsync");
+const { Router } = require("express");
 
 router
   .route("/register")
@@ -37,10 +38,16 @@ router
   .put(isLoggedIn, isUserProfile, HandleAsync(authController.updateProfile));
 
 router.get(
-  "/profile/:id/edit", isLoggedIn,
+  "/profile/:id/edit",
+  isLoggedIn,
   isUserProfile,
   HandleAsync(authController.editProfile)
 );
+
+router
+  .route("/profile/:id/editImg")
+  .get(isLoggedIn, isUserProfile, HandleAsync(authController.updateImagePage))
+  .put(isLoggedIn, isUserProfile,upload.single("image"), HandleAsync(authController.updateImage));
 
 router.get("/logout", authController.logOut);
 module.exports = router;

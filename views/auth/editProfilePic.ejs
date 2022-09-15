@@ -1,0 +1,43 @@
+<% layout('layouts/boilerplate') %>
+<div
+  class="container  d-flex flex-column justify-content-center align-items-center mt-">
+  <div class="card p-3">
+    <div class=" row flex-fill mb-4">
+        <div class="col-6 offset-md-3 ">
+          <div class="d-flex justify-content-center align-items-center">
+            <img
+              src="<%= user.images.thumbnail%>"
+              alt=""
+              class="profile-img mt-4" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <form
+            action="/profile/<%= user._id %>/editImg?_method=put"
+            method="post"
+            class="col-12 validated-form"
+            enctype="multipart/form-data"
+            novalidate>
+            <div class="col-12 mb-4">
+              <label for="image" class="form-label">New Profile Picture</label>
+              <input
+                class="form-control"
+                type="file"
+                id="image"
+                name="image"
+                required />
+              <div class="invalid-feedback">
+                An image is required to update profile picture
+              </div>
+            </div>
+            <div class="col-12 mb-4 d-flex justify-content-evenly">
+              <button type="submit" class="btn btn-primary">Update</button>
+              <a href="/profile/<%= user._id %>"class="btn btn-secondary">Back to profile</a>
+            </div>
+          </form>
+        </div>
+      </div>
+  </div>
+</div>
