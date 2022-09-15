@@ -24,6 +24,9 @@
             <a href="/login" class="nav-link">Login</a>
             <a href="/register" class="nav-link">Sign Up</a>
             <% } else { %>
+            <a href="/profile/<%= currentUser._id %>" class="nav-link"
+              >Profile
+            </a>
             <a href="/logout" class="nav-link">Logout</a>
             <% } %>
           </nav>
@@ -32,11 +35,12 @@
       <main class="px-3">
         <h1>YelpCamp</h1>
         <p class="lead">
-          Welcome to YelpCamp! <br> Explore our many camps and add your own!
+          Welcome to YelpCamp! <br />
+          Explore our many camps and add your own!
         </p>
         <a
           href="/campgrounds"
-          class="btn btn-lrg btn-secondary font-weight-bold  bg-white"
+          class="btn btn-lrg btn-secondary font-weight-bold bg-white"
           >View Campgrounds</a
         >
       </main>
@@ -44,10 +48,6 @@
         <p>&copy;YelpCamp</p>
       </footer>
     </div>
-    <script>
-      console.log("Hi")
-    </script>
-
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"

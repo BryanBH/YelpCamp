@@ -1,14 +1,12 @@
 <% layout('layouts/boilerplate') %>
-
 <div
   class="container d-flex justify-content-center align-items-center mt-3 mb-3">
   <div class="row flex-fill">
-    <h1>Sign Up</h1>
+    <h1>Update Profile Info</h1>
     <form
       class="row g-3 validated-form"
-      action="/register"
+      action="/profile/<%= user._id %>?_method=put"
       method="POST"
-      enctype="multipart/form-data"
       novalidate>
       <div class="col-md-6">
         <label for="firstName" class="form-label">First Name</label>
@@ -18,7 +16,7 @@
           id="firstName"
           class="form-control"
           required
-          autofocus />
+          value="<%= user.firstName %>" />
         <div class="valid-feedback">Looks Good!</div>
       </div>
       <div class="col-md-6">
@@ -28,6 +26,7 @@
           name="lastName"
           id="lastName"
           class="form-control"
+          value="<%= user.lastName %>"
           required />
         <div class="valid-feedback">Looks Good!</div>
       </div>
@@ -38,16 +37,7 @@
           name="email"
           id="email"
           class="form-control"
-          required />
-        <div class="valid-feedback">Looks Good!</div>
-      </div>
-      <div class="col-md-6">
-        <label for="password" class="form-label">Password</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          class="form-control"
+          value="<%= user.email %>"
           required />
         <div class="valid-feedback">Looks Good!</div>
       </div>
@@ -59,7 +49,7 @@
           id="username"
           class="form-control"
           required
-         />
+          value="<%= user.username %>" />
       </div>
       <div class="col-md-6">
         <label for="PhoneNumber" class="form-label">Phone Number</label>
@@ -69,20 +59,21 @@
           class="form-control"
           id="phoneNumber"
           pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+          value="<%= user.phoneNumber %>"
           required />
         <div class="invalid-feedback">
           <small>Format: 123-456-7890</small>
         </div>
       </div>
-      <div class="col-6">
+      <!-- <div class="col-6">
         <label for="image" class="form-label">Profile Picture</label>
         <input class="form-control" type="file" id="image" name="image" />
         <div class="invalid-feedback">
           This profile would look much better with a picture.
         </div>
-      </div>
-      <div class="col-6 d-flex justify-content-center align-items-end">
-        <button type="submit" class="btn btn-success">Register</button>
+      </div> -->
+      <div class="col-12 d-flex justify-content-center align-items-end">
+        <button type="submit" class="btn btn-success">Update Info</button>
       </div>
     </form>
   </div>

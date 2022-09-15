@@ -1,11 +1,13 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const mongoose = require("mongoose");
 const Campground = require("../models/campground");
 const cities = require("./cities");
 const { places, descriptors } = require("./seedHelpers");
 
 mongoose
-  .connect("mongodb://localhost:27017/yelp-camp")
+  .connect(process.env.DB_URL)
   .then(() => {
     console.log("Database connection established");
   })
@@ -107,7 +109,7 @@ const seedDB = async () => {
 
     const camp = new Campground({
       // Bryan Benjumea Author
-      author: "6318fcf6b583600656bc6163",
+      author: "63213927b7aac35b4736bb19",
       location: campLocation,
       title: `${sample(descriptors)} ${sample(places)}`,
       description:

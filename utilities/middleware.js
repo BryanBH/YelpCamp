@@ -1,6 +1,7 @@
 const Campground = require("../models/campground");
-const Review = require("../models/review")
-const { campgroundJoiSchema, reviewJoiSchema} = require("../schemas");
+const Review = require("../models/review");
+const User = require("../models/user");
+const { campgroundJoiSchema, reviewJoiSchema } = require("../schemas");
 const ExpressError = require("../utilities/ExpressError");
 
 module.exports.isLoggedIn = (req, res, next) => {
@@ -23,6 +24,15 @@ module.exports.isAuthor = async (req, res, next) => {
   next();
 };
 
+module.exports.isUserProfile = async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user._id.equals(req.params.id)) {
+    req.flash("error", "you cannot edit this profile");
+    return res.redirect(`/profile${req.params.id}`);
+  }
+  next();
+};
 /**
  * Joi validation before sending to mongoose (campgroundSchema)
  * server side data validation in case client side
@@ -37,8 +47,8 @@ module.exports.validateCampground = (req, res, next) => {
     next();
   }
 };
-module.exports.isReviewAuthor = async(req, res, next) => {
-  const {id, reviewId} = req.params
+module.exports.isReviewAuthor = async (req, res, next) => {
+  const { id, reviewId } = req.params;
   const review = await Review.findById(reviewId);
   if (!review.author.equals(req.user._id)) {
     req.flash("error", "You do not have permission to do that!");

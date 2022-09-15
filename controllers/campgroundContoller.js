@@ -20,7 +20,6 @@ module.exports.createCampground = async (req, res) => {
       limit: 1,
     })
     .send();
-  console.log(geoData.body.features);
   if (geoData.body.features<1) {
     req.flash("error", "Must be a valid location");
     return res.redirect("/campgrounds/new");
